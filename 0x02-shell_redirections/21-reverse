@@ -1,2 +1,2 @@
 #!/bin/bas
-rev
+echo "string" | rev
