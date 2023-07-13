@@ -14,21 +14,21 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
 
-# Start of parameters for myaddy.tech
+# Start parameters for solokool.tech
 
-frontend myaddy.tech-frontend
+frontend solokool.tech-frontend
         bind *:80
         mode http
         http-request redirect scheme https code 301 unless { ssl_fc }
         http-request set-header X_Forwarded-Proto http
-        default_backend myaddy.tech-backend
+        default_backend solokool.tech-backend
 
-frontend myaddy.tech-frontend-https
-        bind *:443 ssl crt /etc/haproxy/certs/myaddy.tech.pem ssl-min-ver TLSv1.1
+frontend solokool.tech-frontend-https
+        bind *:443 ssl crt /etc/haproxy/certs/solokool.tech.pem ssl-min-ver TLSv1.1
         http-request set-header X-Forwarded-Proto https
-        default_backend myaddy.tech-backend
+        default_backend solokool.tech-backend
 
-backend myaddy.tech-backend
+backend solokool.tech-backend
         balance roundrobin
         server 216460-web-01 35.153.52.121:80 check
         server 216460-web-02 34.229.255.174:80 check
