@@ -1,33 +1,28 @@
 #!/usr/bin/env bash
-# Configuring web-01 to have a HTTP RESPONSE HEADER
-# these scripts are an upgrade from the web-server scripts...
+# Customizing a 404-error_page
 
-# uncomment to see the script run in action
-#set -x
-
-echo -e "Updating and doing some minor checks...\n"
+# Updating Packages before performing installations
 sudo apt-get update
 sudo apt-get install -y nginx
 
-# allowing nginx on firewall
-sudo ufw allow 'Nginx HTTP'
-
-# creating new index
+# Creating an index.html page
 echo "Hello World!" | sudo tee /var/www/html/index.html
 
-#Performing a redirection
+# Performing a "moved permanently redirection" (301)
 new_string="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/solokool66 permanent;"
-
 sudo sed -i "s/server_name _;/$new_string/" /etc/nginx/sites-enabled/default
 
-# create new error page
-echo "Ceci n'est pas une page" > /var/www/html/error_404.html
+# Creating a 404 Custom error page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+new_string="listen 80 default_server;\n\terror_page 404 \/404.html;\n\tlocation = \/404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
 
-#Custom HTTP Response Header
-sudo sed -i "server_name _;/a add_header x-Served-By $HOSTNAME;" /etc/nginx/sites-enabled/default
+sudo sed -i "s/listen 80 default_server;/$new_string/" /etc/nginx/sites-enabled/default
 
-#Testing for syntax eror
+# Creating an HTTP response header
+sudo sed -i "/server_name _/a add_header X-Served-By $HOSTNAME;" /etc/nginx/sites-enabled/default
+
+# Testing configurations for syntax errors
 sudo nginx -t
 
-#Restart Nginx
+# Restart nginx after implementing changes
 sudo service nginx restart
